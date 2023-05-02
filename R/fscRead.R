@@ -202,8 +202,14 @@ fscReadArp <- function(p, sim = c(1, 1),
       f.line <- f[pos[i, "start"]:pos[i, "end"]]
       # make matrix and remove remove frequency column
       result <- do.call(rbind, strsplit(f.line, "[[:space:]]+"))[, -2]
-      # return id, deme number (i), and data columns
-      cbind(result[, 1], rep(i, nrow(result)), result[, -1])
+      ## return id, deme number (i), and data columns
+      if (is.null(dim(result))) #deal with occasional change from mat to vector
+      {
+          cbind(result[1],i,result[2])
+          
+      } else {
+          cbind(result[, 1], rep(i, nrow(result)), result[, -1])
+      }
     }))
     colnames(data.mat) <- c("id", "deme", paste0("col", 3:ncol(data.mat)))
     data.mat
